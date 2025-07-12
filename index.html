@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pesan Buat Pondok Luar Angkasa</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      font-family: 'Courier New', Courier, monospace;
+      height: 100%;
+      width: 100%;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .container {
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 2px solid blue;
+      border-radius: 15px;
+      box-shadow: 0 0 20px blue;
+      max-width: 90%;
+    }
+
+    .teks-atas {
+      font-size: 15px;
+      color: lavender;
+      opacity: 0.8;
+    }
+
+    .konten {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .typewriter {
+      max-width: 600px;
+      font-size: 18px;
+      white-space: pre-wrap;
+      text-align: left;
+    }
+
+    #teks {
+      display: inline-block;
+      border-right: 2px solid blue;
+      animation: blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: blue }
+    }
+
+    .music-button {
+      font-size: 30px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: white;
+    }
+
+    .music-button:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="stars"></canvas>
+
+  <div class="container">
+    <div class="teks-atas">pencet emote nya ya 🥺</div>
+    <div class="konten">
+      <div class="typewriter">
+        <span id="teks"></span>
+      </div>
+      <button id="toggleMusic" class="music-button">🥺</button>
+    </div>
+  </div>
+
+  <audio id="musik" loop>
+    <source src="https://files.catbox.moe/i2lv0o.mp3" type="audio/mp3">
+    Browser kamu tidak support audio.
+  </audio>
+
+  <script>
+    // Background bintang
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let width, height;
+    let stars = [];
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener("resize", resize);
+    resize();
+
+    function createStars() {
+      stars = [];
+      for (let i = 0; i < 200; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.5,
+          speed: Math.random() * 0.5 + 0.2
+        });
+      }
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "white";
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = "white";
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+        star.y += star.speed;
+        if (star.y > height) {
+          star.y = 0;
+          star.x = Math.random() * width;
+        }
+      }
+    }
+
+    function animate() {
+      drawStars();
+      requestAnimationFrame(animate);
+    }
+
+    createStars();
+    animate();
+
+    // Efek ketik
+    const teks = `hay ga kerasa yah kita mau pisah ajah hmm sedih yah ga bisa cerita bareng lagih main bareng lagih kalaw kita semuah pisah jangan lupain kita semuah. hmm sedih juga yah harus pisah sama temen yang sebaik kalian walaw ada yang nyebelin sih hhe smoga kalian sehat sehat yah smoga kita bisa ketemu lagih suatu saat makasih yang temen temen udah mau jadi temen aku makasih banget pokonyah kenangan kita ga akan aku lupain jaga diri masing masing yah, se yu next time ya🫂`;
+    const elemen = document.getElementById("teks");
+    let index = 0;
+
+    function ketik() {
+      if (index < teks.length) {
+        elemen.innerHTML += teks.charAt(index);
+        index++;
+        setTimeout(ketik, 100);
+      }
+    }
+
+    ketik();
+
+    // Tombol musik lucu
+    const btn = document.getElementById("toggleMusic");
+    const musik = document.getElementById("musik");
+
+    btn.addEventListener("click", () => {
+      if (musik.paused) {
+        musik.play();
+        btn.textContent = "🫂";
+      } else {
+        musik.pause();
+        btn.textContent = "🥺";
+      }
+    });
+  </script>
+
+</body>
+</html>
